@@ -254,6 +254,14 @@ export default function AdminPage() {
         return;
       }
 
+      // メールアドレスからusername（@の前の部分）を抽出
+      const username = currentUser.email?.split('@')[0] || '';
+      
+      if (!username) {
+        alert('メールアドレスからusernameを取得できませんでした。');
+        return;
+      }
+
       // データベースのデフォルト値に依存（title_text は DB のデフォルト値が使用される）
       // user_id は RLS ポリシーの WITH CHECK により自動的に現在のユーザーIDが設定される
       const { data, error } = await supabase
@@ -261,6 +269,7 @@ export default function AdminPage() {
         .insert({
           year,
           user_id: currentUser.id, // 現在のユーザーIDを設定
+          username: username, // メールアドレスの@の前の部分を設定
           // greeting_text, footer_text, footer_visible は DB のデフォルト値に依存
           // title_text も DB のデフォルト値（'明けましておめでとうございます'）が使用される
         })

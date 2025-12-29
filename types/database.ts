@@ -23,6 +23,7 @@ export type Year = {
   footer_visible: boolean;
   contact_info: ContactInfo | null;
   user_id: string | null;
+  username: string | null; // メールアドレスの@の前の部分
   created_at: string;
   updated_at: string;
 };

@@ -31,7 +31,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-gray-900">プレビュー</h2>
         <Link
-          href={`/greeting/${year.year}`}
+          href={`/greeting/${year.username || 'unknown'}/${year.year}`}
           target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"

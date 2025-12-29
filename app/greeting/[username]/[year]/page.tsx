@@ -6,21 +6,24 @@ import CardModal from '@/components/CardModal';
 import ContactInfo from '@/components/ContactInfo';
 import FooterText from '@/components/FooterText';
 
-async function getYearData(year: number): Promise<YearWithCards | null> {
+async function getYearData(username: string, year: number): Promise<YearWithCards | null> {
   try {
     const supabase = await createClient();
     
     // デバッグ: 環境変数の確認（本番環境ではログに出力されない）
     if (process.env.NODE_ENV === 'development') {
-      console.log('Fetching year data for:', year);
+      console.log('Fetching year data for:', { username, year });
       console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set');
     }
     
+    // まず、usernameカラムが存在するか確認するため、すべてのカラムを取得してみる
+    // usernameとyearで検索（yearsテーブルにusernameカラムが追加されていることを前提）
     const { data: yearData, error: yearError } = await supabase
       .from('years')
       .select('*')
+      .eq('username', username)
       .eq('year', year)
-      .single();
+      .maybeSingle(); // single()の代わりにmaybeSingle()を使用（レコードが存在しない場合もエラーにならない）
 
     if (yearError) {
       console.error('Error fetching year data:', {
@@ -29,11 +32,32 @@ async function getYearData(year: number): Promise<YearWithCards | null> {
         hint: yearError.hint,
         code: yearError.code,
       });
+      
+      // usernameカラムが存在しない可能性がある場合、フォールバック処理
+      if (yearError.message?.includes('column') && yearError.message?.includes('username')) {
+        console.error('usernameカラムが存在しません。マイグレーション006_add_username_to_years.sqlを実行してください。');
+      }
+      
       return null;
     }
 
     if (!yearData) {
-      console.log(`No year data found for year: ${year}`);
+      console.log(`No year data found for username: ${username}, year: ${year}`);
+      
+      // デバッグ: 該当するyearのレコードが存在するか確認
+      const { data: yearDataWithoutUsername, error: checkError } = await supabase
+        .from('years')
+        .select('id, year, user_id, username')
+        .eq('year', year)
+        .limit(5);
+      
+      if (!checkError && yearDataWithoutUsername) {
+        console.log('Records found for year', year, ':', yearDataWithoutUsername);
+        if (yearDataWithoutUsername.length > 0) {
+          console.log('Hint: usernameカラムがNULLの可能性があります。マイグレーション007_populate_username.sqlを実行してください。');
+        }
+      }
+      
       return null;
     }
 
@@ -41,6 +65,7 @@ async function getYearData(year: number): Promise<YearWithCards | null> {
       console.log('Year data found:', {
         id: yearData.id,
         year: yearData.year,
+        username: yearData.username,
         user_id: yearData.user_id,
       });
     }
@@ -73,9 +98,9 @@ async function getYearData(year: number): Promise<YearWithCards | null> {
 export default async function GreetingPage({
   params,
 }: {
-  params: Promise<{ year: string }>;
+  params: Promise<{ username: string; year: string }>;
 }) {
-  const { year } = await params;
+  const { username, year } = await params;
   const yearNum = parseInt(year, 10);
 
   if (isNaN(yearNum)) {
@@ -83,10 +108,10 @@ export default async function GreetingPage({
     notFound();
   }
 
-  const data = await getYearData(yearNum);
+  const data = await getYearData(username, yearNum);
 
   if (!data) {
-    console.error(`Year data not found for year: ${yearNum}`);
+    console.error(`Year data not found for username: ${username}, year: ${yearNum}`);
     notFound();
   }
 
@@ -197,4 +222,3 @@ function CardItem({ card, priority = false }: { card: YearWithCards['cards'][0];
     </div>
   );
 }
-

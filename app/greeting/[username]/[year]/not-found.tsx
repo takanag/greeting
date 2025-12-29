@@ -5,10 +5,10 @@ export default function NotFound() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">404</h1>
-        <p className="text-xl text-gray-700 mb-8">指定された年度のページが見つかりませんでした。</p>
+        <p className="text-xl text-gray-700 mb-8">指定されたユーザーまたは年度のページが見つかりませんでした。</p>
         <div className="space-y-4">
           <p className="text-gray-600">
-            この年度のページがまだ作成されていないか、URLが間違っている可能性があります。
+            このユーザーのページがまだ作成されていないか、URLが間違っている可能性があります。
           </p>
           <Link
             href="/greeting"
