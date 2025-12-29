@@ -164,7 +164,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
 
             {/* 従来の footer_text */}
             {year.footer_text && (
-              <div className="text-center text-xs text-gray-600 whitespace-pre-line">
+              <div className="text-center text-xs text-gray-800 whitespace-pre-line">
                 {year.footer_text}
               </div>
             )}

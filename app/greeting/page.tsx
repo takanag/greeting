@@ -24,7 +24,7 @@ export default function GreetingTopPage() {
           </Link>
         </div>
         
-        <div className="mt-8 text-center text-sm text-gray-600">
+        <div className="mt-8 text-center text-sm text-gray-800">
           <p>既にアカウントをお持ちの方は「ログイン」を、</p>
           <p>新規でアカウントを作成する方は「新規利用登録」をクリックしてください。</p>
         </div>
