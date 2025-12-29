@@ -102,6 +102,15 @@ export default function AdminPage() {
 
       if (yearError) throw yearError;
 
+      // アクセス制御: 管理者でない場合、自分のページのみアクセス可能
+      if (!isAdmin && yearData.user_id !== currentUser.id) {
+        console.error('Access denied: This page belongs to another user');
+        alert('このページは他のユーザーのページです。アクセスできません。');
+        // 自分のページのみを再読み込み
+        await loadYears();
+        return;
+      }
+
       const { data: cards, error: cardsError } = await supabase
         .from('cards')
         .select('*')
