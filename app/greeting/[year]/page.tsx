@@ -7,39 +7,67 @@ import ContactInfo from '@/components/ContactInfo';
 import FooterText from '@/components/FooterText';
 
 async function getYearData(year: number): Promise<YearWithCards | null> {
-  const supabase = await createClient();
-  
-  const { data: yearData, error: yearError } = await supabase
-    .from('years')
-    .select('*')
-    .eq('year', year)
-    .single();
+  try {
+    const supabase = await createClient();
+    
+    // デバッグ: 環境変数の確認（本番環境ではログに出力されない）
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Fetching year data for:', year);
+      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set');
+    }
+    
+    const { data: yearData, error: yearError } = await supabase
+      .from('years')
+      .select('*')
+      .eq('year', year)
+      .single();
 
-  if (yearError) {
-    console.error('Error fetching year data:', yearError);
+    if (yearError) {
+      console.error('Error fetching year data:', {
+        message: yearError.message,
+        details: yearError.details,
+        hint: yearError.hint,
+        code: yearError.code,
+      });
+      return null;
+    }
+
+    if (!yearData) {
+      console.log(`No year data found for year: ${year}`);
+      return null;
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Year data found:', {
+        id: yearData.id,
+        year: yearData.year,
+        user_id: yearData.user_id,
+      });
+    }
+
+    const { data: cards, error: cardsError } = await supabase
+      .from('cards')
+      .select('*')
+      .eq('year_id', yearData.id)
+      .order('display_order', { ascending: true });
+
+    if (cardsError) {
+      console.error('Error fetching cards:', cardsError);
+      // カードがなくても年度データは返す
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Cards found:', cards?.length || 0);
+    }
+
+    return {
+      ...yearData,
+      cards: cards || [],
+    };
+  } catch (error) {
+    console.error('Unexpected error in getYearData:', error);
     return null;
   }
-
-  if (!yearData) {
-    console.log(`No year data found for year: ${year}`);
-    return null;
-  }
-
-  const { data: cards, error: cardsError } = await supabase
-    .from('cards')
-    .select('*')
-    .eq('year_id', yearData.id)
-    .order('display_order', { ascending: true });
-
-  if (cardsError) {
-    console.error('Error fetching cards:', cardsError);
-    // カードがなくても年度データは返す
-  }
-
-  return {
-    ...yearData,
-    cards: cards || [],
-  };
 }
 
 export default async function GreetingPage({
