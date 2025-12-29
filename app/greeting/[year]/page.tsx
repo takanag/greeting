@@ -79,12 +79,14 @@ export default async function GreetingPage({
   const yearNum = parseInt(year, 10);
 
   if (isNaN(yearNum)) {
+    console.error('Invalid year parameter:', year);
     notFound();
   }
 
   const data = await getYearData(yearNum);
 
   if (!data) {
+    console.error(`Year data not found for year: ${yearNum}`);
     notFound();
   }
 
