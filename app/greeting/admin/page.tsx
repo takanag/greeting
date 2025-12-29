@@ -194,7 +194,7 @@ export default function AdminPage() {
             <select
               value={selectedYearId || ''}
               onChange={(e) => handleYearChange(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-md"
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-900"
             >
               {years.map((year) => (
                 <option key={year.id} value={year.id}>
