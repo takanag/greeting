@@ -40,19 +40,7 @@ export default function AdminPage() {
     loadCurrentUser();
   }, [loadCurrentUser]);
 
-  useEffect(() => {
-    if (currentUser) {
-      loadYears();
-    }
-  }, [currentUser, isAdmin]);
-
-  useEffect(() => {
-    if (selectedYearId) {
-      loadYearData(selectedYearId);
-    }
-  }, [selectedYearId]);
-
-  const loadYears = async () => {
+  const loadYears = useCallback(async () => {
     try {
       if (!currentUser) {
         setYears([]);
@@ -90,9 +78,9 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentUser, isAdmin, supabase, selectedYearId]);
 
-  const loadYearData = async (yearId: string) => {
+  const loadYearData = useCallback(async (yearId: string) => {
     try {
       const { data: yearData, error: yearError } = await supabase
         .from('years')
@@ -125,8 +113,21 @@ export default function AdminPage() {
       } as YearWithCards);
     } catch (err) {
       console.error('Error loading year data:', err);
+      alert('データの読み込みに失敗しました: ' + (err as Error).message);
     }
-  };
+  }, [currentUser, isAdmin, supabase, loadYears]);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadYears();
+    }
+  }, [currentUser, loadYears]);
+
+  useEffect(() => {
+    if (selectedYearId) {
+      loadYearData(selectedYearId);
+    }
+  }, [selectedYearId, loadYearData]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
