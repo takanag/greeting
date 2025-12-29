@@ -26,7 +26,7 @@ export default function AdminPage() {
     if (currentUser) {
       loadYears();
     }
-  }, [currentUser]);
+  }, [currentUser, isAdmin]);
 
   useEffect(() => {
     if (selectedYearId) {
@@ -54,11 +54,24 @@ export default function AdminPage() {
 
   const loadYears = async () => {
     try {
-      // RLSポリシーにより、ユーザーは自分のページのみ、管理者はすべてのページを取得できる
-      const { data, error } = await supabase
+      if (!currentUser) {
+        setYears([]);
+        setLoading(false);
+        return;
+      }
+
+      // 管理者の場合はすべてのページを取得、一般ユーザーは自分のページのみ
+      let query = supabase
         .from('years')
         .select('*')
         .order('year', { ascending: false });
+
+      // 管理者でない場合は、自分のuser_idでフィルタリング
+      if (!isAdmin) {
+        query = query.eq('user_id', currentUser.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -69,6 +82,8 @@ export default function AdminPage() {
         }
       } else {
         setYears([]);
+        setSelectedYearId(null);
+        setSelectedYear(null);
       }
     } catch (err) {
       console.error('Error loading years:', err);
