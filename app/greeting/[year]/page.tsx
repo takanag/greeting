@@ -15,7 +15,13 @@ async function getYearData(year: number): Promise<YearWithCards | null> {
     .eq('year', year)
     .single();
 
-  if (yearError || !yearData) {
+  if (yearError) {
+    console.error('Error fetching year data:', yearError);
+    return null;
+  }
+
+  if (!yearData) {
+    console.log(`No year data found for year: ${year}`);
     return null;
   }
 
@@ -26,7 +32,8 @@ async function getYearData(year: number): Promise<YearWithCards | null> {
     .order('display_order', { ascending: true });
 
   if (cardsError) {
-    return null;
+    console.error('Error fetching cards:', cardsError);
+    // カードがなくても年度データは返す
   }
 
   return {
