@@ -4,8 +4,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // ログインページの場合は認証チェックをスキップ
-  if (pathname === '/greeting/admin/login') {
+  // ログインページと新規登録ページの場合は認証チェックをスキップ
+  if (pathname === '/greeting/admin/login' || pathname === '/greeting/signup') {
     return NextResponse.next();
   }
 
