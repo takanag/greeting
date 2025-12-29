@@ -44,30 +44,56 @@ export default function SignupPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/greeting/admin/login`,
+        },
       });
 
       if (error) {
         let errorMessage = '登録に失敗しました。もう一度お試しください。';
         
-        if (error.message === 'User already registered') {
+        // エラーメッセージを詳細に表示（開発環境では元のメッセージも表示）
+        if (error.message.includes('User already registered') || error.message.includes('already registered')) {
           errorMessage = 'このメールアドレスは既に登録されています';
-        } else if (error.message.includes('Password')) {
-          errorMessage = 'パスワードの形式が正しくありません';
-        } else if (error.message.includes('Email')) {
+        } else if (error.message.includes('Password') || error.message.includes('password')) {
+          errorMessage = 'パスワードの形式が正しくありません（6文字以上、英数字を含む）';
+        } else if (error.message.includes('Email') || error.message.includes('email')) {
           errorMessage = 'メールアドレスの形式が正しくありません';
+        } else if (error.message.includes('signup_disabled')) {
+          errorMessage = '新規登録が無効になっています。管理者にお問い合わせください';
+        } else if (error.message.includes('email_rate_limit')) {
+          errorMessage = 'メール送信の制限に達しました。しばらく待ってから再度お試しください';
+        } else {
+          // 開発環境では詳細なエラーメッセージを表示
+          if (process.env.NODE_ENV === 'development') {
+            errorMessage = `登録に失敗しました: ${error.message}`;
+          }
         }
         
+        console.error('Signup error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name,
+        });
         setError(errorMessage);
         setLoading(false);
         return;
       }
 
+      // サインアップが成功した場合（メール確認が必要な場合でも成功とみなす）
       if (data.user) {
         setSuccess(true);
+        // メール確認が必要な場合は、確認メールの案内を表示
+        if (data.user.email_confirmed_at === null) {
+          // メール確認が必要な場合のメッセージは success 画面で表示
+        }
         // 3秒後にログインページにリダイレクト
         setTimeout(() => {
           router.push('/greeting/admin/login');
         }, 3000);
+      } else {
+        setError('登録に失敗しました。もう一度お試しください。');
+        setLoading(false);
       }
     } catch (err: any) {
       const errorMessage = err.message || '登録に失敗しました。もう一度お試しください。';
