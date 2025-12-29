@@ -54,11 +54,13 @@ export default function SignupPage() {
         
         // エラーメッセージを詳細に表示（開発環境では元のメッセージも表示）
         if (error.message.includes('User already registered') || error.message.includes('already registered')) {
-          errorMessage = 'このメールアドレスは既に登録されています';
+          errorMessage = 'このメールアドレスは既に登録されています。ログインページからログインしてください。';
         } else if (error.message.includes('Password') || error.message.includes('password')) {
           errorMessage = 'パスワードの形式が正しくありません（6文字以上、英数字を含む）';
+        } else if (error.message.includes('Email') && error.message.includes('invalid')) {
+          errorMessage = 'メールアドレスの形式が正しくないか、使用できないドメインです。実際に使用できるメールアドレス（Gmail、Yahoo、Outlookなど）をご利用ください。';
         } else if (error.message.includes('Email') || error.message.includes('email')) {
-          errorMessage = 'メールアドレスの形式が正しくありません';
+          errorMessage = 'メールアドレスの形式が正しくありません。実際に使用できるメールアドレスをご入力ください。';
         } else if (error.message.includes('signup_disabled')) {
           errorMessage = '新規登録が無効になっています。管理者にお問い合わせください';
         } else if (error.message.includes('email_rate_limit')) {
@@ -153,8 +155,11 @@ export default function SignupPage() {
               autoComplete="email"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="example@email.com"
+              placeholder="your-email@gmail.com"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              実際に使用できるメールアドレス（Gmail、Yahoo、Outlookなど）をご入力ください
+            </p>
           </div>
           
           <div>
