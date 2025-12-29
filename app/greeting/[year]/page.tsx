@@ -133,7 +133,7 @@ function CardItem({ card, priority = false }: { card: YearWithCards['cards'][0];
       <div className="p-4 md:p-6 flex-1 flex flex-col">
         {/* カードヘッダー */}
         <div className="mb-3">
-          <h2 className="text-xl md:text-2xl font-bold mb-2">{card.title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-2 text-gray-900">{card.title}</h2>
           <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600">
             <span className="font-semibold">{card.month}</span>
             {card.by_text && <span>By {card.by_text}</span>}

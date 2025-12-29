@@ -75,7 +75,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
             <div key={card.id} className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-4">
                 <div className="mb-2">
-                  <h2 className="text-xl font-bold">{card.title}</h2>
+                  <h2 className="text-xl font-bold text-gray-900">{card.title}</h2>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="font-semibold">{card.month}</span>
                     {card.by_text && <span>By {card.by_text}</span>}
