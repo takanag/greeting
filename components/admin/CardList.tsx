@@ -160,7 +160,7 @@ function SortableCardItem({
                     handleOrderSubmit();
                   }
                 }}
-                className="w-12 px-1 py-1 text-xs border border-gray-300 rounded text-center"
+                className="w-12 px-1 py-1 text-xs border border-gray-300 rounded text-center text-gray-900"
                 title="順序を直接入力（Enterで確定）"
               />
             </div>
