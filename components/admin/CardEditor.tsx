@@ -15,11 +15,13 @@ export default function CardEditor({
   card,
   onSave,
   onCancel,
+  englishEnabled = false,
 }: {
   yearId: string;
   card?: Card;
   onSave: () => void;
   onCancel: () => void;
+  englishEnabled?: boolean;
 }) {
   const [title, setTitle] = useState(card?.title || '');
   const [byText, setByText] = useState(card?.by_text || '');
@@ -27,8 +29,94 @@ export default function CardEditor({
   const [description, setDescription] = useState(card?.description || '');
   const [imageUrl, setImageUrl] = useState(card?.image_url || '');
   const [thumbnailUrl, setThumbnailUrl] = useState(card?.thumbnail_url || '');
+  const [titleEn, setTitleEn] = useState(card?.title_en || '');
+  const [descriptionEn, setDescriptionEn] = useState(card?.description_en || '');
+  const [byTextEn, setByTextEn] = useState(card?.by_text_en || '');
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const supabase = createClient();
+
+  // 翻訳関数
+  const translateText = async (text: string): Promise<string> => {
+    if (!text.trim()) return '';
+    
+    try {
+      const response = await fetch('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text, targetLang: 'en' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Translation failed');
+      }
+
+      const data = await response.json();
+      return data.translatedText || text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return text; // エラー時は元のテキストを返す
+    }
+  };
+
+  useEffect(() => {
+    if (card) {
+      setTitle(card.title);
+      setByText(card.by_text);
+      setMonth(card.month);
+      setDescription(card.description);
+      setImageUrl(card.image_url);
+      setThumbnailUrl(card.thumbnail_url);
+      setTitleEn(card.title_en || '');
+      setDescriptionEn(card.description_en || '');
+      setByTextEn(card.by_text_en || '');
+    } else {
+      // 新規作成時は空にする
+      setTitle('');
+      setByText('');
+      setMonth('January');
+      setDescription('');
+      setImageUrl('');
+      setThumbnailUrl('');
+      setTitleEn('');
+      setDescriptionEn('');
+      setByTextEn('');
+    }
+  }, [card]);
+
+  // 英語版が有効で、英語フィールドが空の場合に自動翻訳
+  useEffect(() => {
+    if (englishEnabled && card && (!titleEn || !descriptionEn)) {
+      const autoTranslate = async () => {
+        setTranslating(true);
+        try {
+          const [translatedTitle, translatedDescription, translatedByText] = await Promise.all([
+            titleEn || !title ? titleEn : translateText(title),
+            descriptionEn || !description ? descriptionEn : translateText(description),
+            byTextEn || !byText ? byTextEn : translateText(byText),
+          ]);
+
+          if (translatedTitle && !titleEn) {
+            setTitleEn(translatedTitle);
+          }
+          if (translatedDescription && !descriptionEn) {
+            setDescriptionEn(translatedDescription);
+          }
+          if (translatedByText && !byTextEn) {
+            setByTextEn(translatedByText);
+          }
+        } catch (error) {
+          console.error('Auto-translation error:', error);
+        } finally {
+          setTranslating(false);
+        }
+      };
+
+      autoTranslate();
+    }
+  }, [englishEnabled, card?.id]); // カードが変更されたときのみ実行
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -49,6 +137,9 @@ export default function CardEditor({
             description,
             image_url: imageUrl,
             thumbnail_url: thumbnailUrl,
+            title_en: englishEnabled ? (titleEn || null) : null,
+            description_en: englishEnabled ? (descriptionEn || null) : null,
+            by_text_en: englishEnabled ? (byTextEn || null) : null,
           })
           .eq('id', card.id);
 
@@ -76,6 +167,9 @@ export default function CardEditor({
             image_url: imageUrl,
             thumbnail_url: thumbnailUrl,
             display_order: nextOrder,
+            title_en: englishEnabled ? (titleEn || null) : null,
+            description_en: englishEnabled ? (descriptionEn || null) : null,
+            by_text_en: englishEnabled ? (byTextEn || null) : null,
           });
 
         if (error) throw error;
@@ -119,6 +213,15 @@ export default function CardEditor({
           onChange={(e) => setByText(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900"
         />
+        {englishEnabled && (
+          <input
+            type="text"
+            value={byTextEn}
+            onChange={(e) => setByTextEn(e.target.value)}
+            className="w-full px-3 py-2 mt-1 border border-blue-300 rounded-md text-gray-900 text-sm"
+            placeholder="By (English)"
+          />
+        )}
       </div>
 
       <div>
@@ -161,6 +264,77 @@ export default function CardEditor({
           currentThumbnailUrl={thumbnailUrl}
         />
       </div>
+
+      {englishEnabled && (
+        <div className="border-t border-gray-300 pt-4 mt-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-gray-700">英語版</h3>
+            {translating && (
+              <span className="text-xs text-gray-500">翻訳中...</span>
+            )}
+            {!translating && (!titleEn || !descriptionEn) && (title || description) && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setTranslating(true);
+                  try {
+                    const [translatedTitle, translatedDescription, translatedByText] = await Promise.all([
+                      titleEn || !title ? titleEn : translateText(title),
+                      descriptionEn || !description ? descriptionEn : translateText(description),
+                      byTextEn || !byText ? byTextEn : translateText(byText),
+                    ]);
+
+                    if (translatedTitle && !titleEn) {
+                      setTitleEn(translatedTitle);
+                    }
+                    if (translatedDescription && !descriptionEn) {
+                      setDescriptionEn(translatedDescription);
+                    }
+                    if (translatedByText && !byTextEn) {
+                      setByTextEn(translatedByText);
+                    }
+                  } catch (error) {
+                    console.error('Translation error:', error);
+                    alert('翻訳に失敗しました。手動で入力してください。');
+                  } finally {
+                    setTranslating(false);
+                  }
+                }}
+                className="text-xs text-blue-600 hover:text-blue-800 underline"
+              >
+                日本語から自動翻訳
+              </button>
+            )}
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                タイトル（英語）
+              </label>
+              <input
+                type="text"
+                value={titleEn}
+                onChange={(e) => setTitleEn(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900"
+                placeholder="Title (English)"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                説明文（英語、改行可能）
+              </label>
+              <textarea
+                value={descriptionEn}
+                onChange={(e) => setDescriptionEn(e.target.value)}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md resize-y text-gray-900"
+                placeholder="Description (English, press Enter for new line)"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-2">
         <button

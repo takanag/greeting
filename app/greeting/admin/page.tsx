@@ -12,6 +12,7 @@ export default function AdminPage() {
   const [years, setYears] = useState<YearWithCards[]>([]);
   const [selectedYearId, setSelectedYearId] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<YearWithCards | null>(null);
+  const [englishEnabled, setEnglishEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -107,10 +108,12 @@ export default function AdminPage() {
 
       if (cardsError) throw cardsError;
 
-      setSelectedYear({
+      const yearWithCards = {
         ...yearData,
         cards: cards || [],
-      } as YearWithCards);
+      } as YearWithCards;
+      setSelectedYear(yearWithCards);
+      setEnglishEnabled(yearWithCards.english_enabled || false);
     } catch (err) {
       console.error('Error loading year data:', err);
       alert('データの読み込みに失敗しました: ' + (err as Error).message);
@@ -229,11 +232,13 @@ export default function AdminPage() {
               <YearEditor
                 year={selectedYear}
                 onUpdate={handleYearUpdate}
+                onEnglishEnabledChange={setEnglishEnabled}
               />
               <CardList
                 yearId={selectedYear.id}
                 cards={selectedYear.cards}
                 onUpdate={handleCardUpdate}
+                englishEnabled={englishEnabled}
               />
             </div>
 

@@ -90,6 +90,7 @@ function SortableCardItem({
         <CardEditor
           yearId={yearId}
           card={card}
+          englishEnabled={englishEnabled}
           onSave={() => {
             setEditingCardId(null);
             onUpdate();
@@ -189,10 +190,12 @@ export default function CardList({
   yearId,
   cards,
   onUpdate,
+  englishEnabled = false,
 }: {
   yearId: string;
   cards: Card[];
   onUpdate: () => void;
+  englishEnabled?: boolean;
 }) {
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [showNewCard, setShowNewCard] = useState(false);
@@ -289,6 +292,7 @@ export default function CardList({
       {showNewCard && (
         <CardEditor
           yearId={yearId}
+          englishEnabled={englishEnabled}
           onSave={() => {
             setShowNewCard(false);
             onUpdate();

@@ -15,6 +15,8 @@ function normalizeContactInfo(contactInfo: ContactInfo | null): ContactInfo {
         { name: '', email: '', phone: '' },
       ],
       contact_count: 2,
+      home_en: { address: '' },
+      contacts_en: [{ name: '' }, { name: '' }],
     };
   }
 
@@ -27,6 +29,9 @@ function normalizeContactInfo(contactInfo: ContactInfo | null): ContactInfo {
       // 後方互換性のため、既存のtakahikoとitsukiも保持
       takahiko: contactInfo.takahiko,
       itsuki: contactInfo.itsuki,
+      // 英語版の連絡先情報
+      home_en: contactInfo.home_en || { address: '' },
+      contacts_en: contactInfo.contacts_en || contactInfo.contacts.map(() => ({ name: '' })),
     };
   }
 
@@ -59,21 +64,30 @@ function normalizeContactInfo(contactInfo: ContactInfo | null): ContactInfo {
     // 後方互換性のため、既存のtakahikoとitsukiも保持
     takahiko: contactInfo.takahiko,
     itsuki: contactInfo.itsuki,
+    // 英語版の連絡先情報
+    home_en: contactInfo.home_en || { address: '' },
+    contacts_en: contactInfo.contacts_en || contacts.map(() => ({ name: '' })),
   };
 }
 
 export default function YearEditor({
   year,
   onUpdate,
+  onEnglishEnabledChange,
 }: {
   year: YearWithCards;
   onUpdate: () => void;
+  onEnglishEnabledChange?: (enabled: boolean) => void;
 }) {
   const [titleText, setTitleText] = useState(year.title_text);
   const [greetingText, setGreetingText] = useState(year.greeting_text);
   const [headerBackgroundUrl, setHeaderBackgroundUrl] = useState(year.header_background_url || '');
   const [footerText, setFooterText] = useState(year.footer_text);
   const [footerVisible, setFooterVisible] = useState(year.footer_visible);
+  const [englishEnabled, setEnglishEnabled] = useState(year.english_enabled || false);
+  const [titleTextEn, setTitleTextEn] = useState(year.title_text_en || '');
+  const [greetingTextEn, setGreetingTextEn] = useState(year.greeting_text_en || '');
+  const [footerTextEn, setFooterTextEn] = useState(year.footer_text_en || '');
   
   // 連絡先情報を正規化（既存データを保持）
   const normalizedContactInfo = normalizeContactInfo(year.contact_info);
@@ -87,10 +101,14 @@ export default function YearEditor({
     setHeaderBackgroundUrl(year.header_background_url || '');
     setFooterText(year.footer_text);
     setFooterVisible(year.footer_visible);
+    setEnglishEnabled(year.english_enabled || false);
+    setTitleTextEn(year.title_text_en || '');
+    setGreetingTextEn(year.greeting_text_en || '');
+    setFooterTextEn(year.footer_text_en || '');
     const normalized = normalizeContactInfo(year.contact_info);
     setContactInfo(normalized);
     setContactCount(normalized.contact_count || 2);
-  }, [year.id, year.title_text, year.greeting_text, year.header_background_url, year.footer_text, year.footer_visible, JSON.stringify(year.contact_info)]);
+  }, [year.id, year.title_text, year.greeting_text, year.header_background_url, year.footer_text, year.footer_visible, year.english_enabled, year.title_text_en, year.greeting_text_en, year.footer_text_en, JSON.stringify(year.contact_info)]);
   
   // 連絡先の数が変更されたときに、contacts配列を調整
   useEffect(() => {
@@ -115,11 +133,49 @@ export default function YearEditor({
   }, [contactCount]);
   
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const supabase = createClient();
+
+  // 翻訳関数
+  const translateText = async (text: string): Promise<string> => {
+    if (!text.trim()) return '';
+    
+    try {
+      const response = await fetch('/api/translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text, targetLang: 'en' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Translation failed');
+      }
+
+      const data = await response.json();
+      return data.translatedText || text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return text; // エラー時は元のテキストを返す
+    }
+  };
+
+  // このuseEffectは削除（チェックボックスのonChangeで直接処理するため）
 
   const handleSave = async () => {
     setSaving(true);
     try {
+      // contact_infoに英語版のデータを含める
+      const contactInfoToSave = {
+        ...contactInfo,
+        // 英語版が有効な場合のみ英語版のデータを含める
+        ...(englishEnabled && {
+          home_en: contactInfo.home_en || { address: '' },
+          contacts_en: contactInfo.contacts_en || [],
+        }),
+      };
+
       const { error } = await supabase
         .from('years')
         .update({
@@ -128,7 +184,11 @@ export default function YearEditor({
           header_background_url: headerBackgroundUrl || null,
           footer_text: footerText,
           footer_visible: footerVisible,
-          contact_info: contactInfo,
+          contact_info: contactInfoToSave,
+          english_enabled: englishEnabled,
+          title_text_en: englishEnabled ? (titleTextEn || null) : null,
+          greeting_text_en: englishEnabled ? (greetingTextEn || null) : null,
+          footer_text_en: englishEnabled ? (footerTextEn || null) : null,
         })
         .eq('id', year.id);
 
@@ -138,6 +198,7 @@ export default function YearEditor({
       alert('保存しました');
     } catch (err: any) {
       alert('保存に失敗しました: ' + err.message);
+      console.error('Save error:', err);
     } finally {
       setSaving(false);
     }
@@ -249,6 +310,20 @@ export default function YearEditor({
                     className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md resize-y text-gray-900"
                     placeholder="住所を入力（Enterキーで改行できます）"
                   />
+                  {englishEnabled && (
+                    <textarea
+                      value={contactInfo.home_en?.address || ''}
+                      onChange={(e) =>
+                        setContactInfo({
+                          ...contactInfo,
+                          home_en: { address: e.target.value },
+                        })
+                      }
+                      rows={3}
+                      className="w-full px-2 py-1 text-xs mt-1 border border-blue-300 rounded-md resize-y text-gray-900"
+                      placeholder="Address (English, press Enter for new line)"
+                    />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs text-gray-800 mb-1">電話</label>
@@ -282,6 +357,25 @@ export default function YearEditor({
                       className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                       placeholder="名前を入力"
                     />
+                    {englishEnabled && (
+                      <input
+                        type="text"
+                        value={contactInfo.contacts_en?.[index]?.name || ''}
+                        onChange={(e) => {
+                          const newContactsEn = [...(contactInfo.contacts_en || [])];
+                          while (newContactsEn.length <= index) {
+                            newContactsEn.push({ name: '' });
+                          }
+                          newContactsEn[index] = { name: e.target.value };
+                          setContactInfo({
+                            ...contactInfo,
+                            contacts_en: newContactsEn,
+                          });
+                        }}
+                        className="w-full px-2 py-1 text-xs mt-1 border border-blue-300 rounded-md text-gray-900"
+                        placeholder="Name (English)"
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block text-xs text-gray-800 mb-1">Eメール</label>
@@ -333,6 +427,100 @@ export default function YearEditor({
           <label htmlFor="footerVisible" className="text-sm font-medium text-gray-700">
             住所・連絡先を表示する
           </label>
+        </div>
+
+        <div className="border-t border-gray-300 pt-4 mt-4">
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              id="englishEnabled"
+              checked={englishEnabled}
+              onChange={async (e) => {
+                const newValue = e.target.checked;
+                setEnglishEnabled(newValue);
+                // 親コンポーネントに通知
+                if (onEnglishEnabledChange) {
+                  onEnglishEnabledChange(newValue);
+                }
+                
+                // チェックを入れたとき、英語フィールドが空の場合は自動翻訳
+                if (newValue && (!titleTextEn || !greetingTextEn || !footerTextEn)) {
+                  setTranslating(true);
+                  try {
+                    const [translatedTitle, translatedGreeting, translatedFooter] = await Promise.all([
+                      titleTextEn || !titleText ? titleTextEn : translateText(titleText),
+                      greetingTextEn || !greetingText ? greetingTextEn : translateText(greetingText),
+                      footerTextEn || !footerText ? footerTextEn : translateText(footerText),
+                    ]);
+
+                    if (translatedTitle && !titleTextEn) {
+                      setTitleTextEn(translatedTitle);
+                    }
+                    if (translatedGreeting && !greetingTextEn) {
+                      setGreetingTextEn(translatedGreeting);
+                    }
+                    if (translatedFooter && !footerTextEn) {
+                      setFooterTextEn(translatedFooter);
+                    }
+                  } catch (error) {
+                    console.error('Auto-translation error:', error);
+                  } finally {
+                    setTranslating(false);
+                  }
+                }
+              }}
+              className="mr-2"
+            />
+            <label htmlFor="englishEnabled" className="text-sm font-medium text-gray-700">
+              英語版を作成する
+            </label>
+            {translating && (
+              <span className="ml-2 text-xs text-gray-500">翻訳中...</span>
+            )}
+          </div>
+
+          {englishEnabled && (
+            <div className="space-y-4 pl-4 border-l-2 border-blue-300">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  タイトル（英語）
+                </label>
+                <input
+                  type="text"
+                  value={titleTextEn}
+                  onChange={(e) => setTitleTextEn(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  placeholder="Title (English)"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  挨拶文（英語、改行可能）
+                </label>
+                <textarea
+                  value={greetingTextEn}
+                  onChange={(e) => setGreetingTextEn(e.target.value)}
+                  rows={6}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-gray-900"
+                  placeholder="Greeting text (English, press Enter for new line)"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  住所・連絡先（英語、改行可能）
+                </label>
+                <textarea
+                  value={footerTextEn}
+                  onChange={(e) => setFooterTextEn(e.target.value)}
+                  rows={6}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-gray-900"
+                  placeholder="Address and contact information (English, press Enter for new line)"
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <button

@@ -25,7 +25,7 @@ function getContacts(contactInfo: ContactInfoType) {
   return contacts;
 }
 
-export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoType }) {
+export default function ContactInfo({ contactInfo, isEnglish = false }: { contactInfo: ContactInfoType; isEnglish?: boolean }) {
   // コピーイベントを無効化
   const handleCopy = (e: React.ClipboardEvent) => {
     e.preventDefault();
@@ -38,6 +38,19 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
 
   const contacts = getContacts(contactInfo);
   
+  // 英語版の場合は英語版のデータを使用
+  const homeAddress = isEnglish && contactInfo.home_en?.address 
+    ? contactInfo.home_en.address 
+    : contactInfo.home?.address;
+  
+  // 英語版の連絡先名を取得
+  const contactNames = isEnglish && contactInfo.contacts_en && contactInfo.contacts_en.length > 0
+    ? contacts.map((contact, i) => {
+        const enName = contactInfo.contacts_en?.[i]?.name;
+        return enName || contact.name || (isEnglish ? 'Contact' : '連絡先');
+      })
+    : contacts.map(c => c.name || (isEnglish ? 'Contact' : '連絡先'));
+  
   // デバッグ: 開発環境でのみログを出力
   if (process.env.NODE_ENV === 'development') {
     console.log('ContactInfo - contactInfo:', contactInfo);
@@ -45,7 +58,7 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
     console.log('ContactInfo - contacts.length:', contacts.length);
   }
   
-  const totalCols = contacts.length + (contactInfo.home?.address || contactInfo.home?.phone ? 1 : 0);
+  const totalCols = contacts.length + (homeAddress || contactInfo.home?.phone ? 1 : 0);
   const gridColsClass = 
     totalCols === 1 ? 'md:grid-cols-1' :
     totalCols === 2 ? 'md:grid-cols-2' :
@@ -54,8 +67,16 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
     'md:grid-cols-5';
   
   // 連絡先が1つもない場合は何も表示しない
-  if (contacts.length === 0 && !contactInfo.home?.address && !contactInfo.home?.phone) {
+  if (contacts.length === 0 && !homeAddress && !contactInfo.home?.phone) {
     return null;
+  }
+
+  // デバッグ: 開発環境でのみログを出力
+  if (process.env.NODE_ENV === 'development' && isEnglish) {
+    console.log('ContactInfo (English) - home_en:', contactInfo.home_en);
+    console.log('ContactInfo (English) - contacts_en:', contactInfo.contacts_en);
+    console.log('ContactInfo (English) - homeAddress:', homeAddress);
+    console.log('ContactInfo (English) - contactNames:', contactNames);
   }
 
   return (
@@ -65,7 +86,7 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
       onContextMenu={handleContextMenu}
     >
       {/* 自宅 - 名刺カード */}
-      {(contactInfo.home?.address || contactInfo.home?.phone) && (
+      {(homeAddress || contactInfo.home?.phone) && (
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 md:p-8 hover:shadow-xl transition-shadow duration-300">
           <div className="text-center">
             <div className="mb-4">
@@ -75,11 +96,13 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
                 </svg>
               </div>
             </div>
-            <h3 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-2">自宅</h3>
+            <h3 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-2">
+              {isEnglish ? 'Home' : '自宅'}
+            </h3>
             <div className="space-y-3 text-sm text-gray-700">
-              {contactInfo.home?.address && (
+              {homeAddress && (
                 <div className="whitespace-pre-line leading-relaxed">
-                  {contactInfo.home.address}
+                  {homeAddress}
                 </div>
               )}
               {contactInfo.home?.phone && (
@@ -120,7 +143,7 @@ export default function ContactInfo({ contactInfo }: { contactInfo: ContactInfoT
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-gray-200 pb-2">
-                {contact.name || '連絡先'}
+                {contactNames[index] || (isEnglish ? 'Contact' : '連絡先')}
               </h3>
               <div className="space-y-3 text-sm text-gray-700">
                 {contact.email && (

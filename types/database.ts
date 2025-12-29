@@ -22,6 +22,13 @@ export type ContactInfo = {
   }>;
   // 表示する連絡先の数（デフォルト: 2）
   contact_count?: number;
+  // 英語版の連絡先情報
+  home_en?: {
+    address?: string;
+  };
+  contacts_en?: Array<{
+    name?: string;
+  }>;
 };
 
 export type Year = {
@@ -35,6 +42,10 @@ export type Year = {
   contact_info: ContactInfo | null;
   user_id: string | null;
   username: string | null; // メールアドレスの@の前の部分
+  english_enabled: boolean;
+  title_text_en: string | null;
+  greeting_text_en: string | null;
+  footer_text_en: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -49,6 +60,9 @@ export type Card = {
   image_url: string;
   thumbnail_url: string;
   display_order: number;
+  title_en: string | null;
+  description_en: string | null;
+  by_text_en: string | null;
   created_at: string;
   updated_at: string;
 };

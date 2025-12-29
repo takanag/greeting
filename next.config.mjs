@@ -8,10 +8,6 @@ const nextConfig = {
       },
     ],
   },
-  // Next.js 16のinstrumentation機能を無効化（使用していない場合）
-  experimental: {
-    instrumentationHook: false,
-  },
 };
 
 export default nextConfig;
