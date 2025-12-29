@@ -83,7 +83,7 @@ export default function YearEditor({
             value={greetingText}
             onChange={(e) => setGreetingText(e.target.value)}
             rows={6}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-gray-900"
             placeholder="新年の挨拶文を入力してください（Enterキーで改行できます）"
           />
         </div>
