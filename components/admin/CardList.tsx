@@ -34,6 +34,7 @@ function SortableCardItem({
   onOrderChange,
   currentOrder,
   totalCards,
+  englishEnabled,
 }: {
   card: Card;
   yearId: string;
@@ -46,6 +47,7 @@ function SortableCardItem({
   onOrderChange: (newOrder: number) => void;
   currentOrder: number;
   totalCards: number;
+  englishEnabled: boolean;
 }) {
   const {
     attributes,
@@ -325,6 +327,7 @@ export default function CardList({
                 onOrderChange={(newOrder) => handleOrderChange(index, newOrder)}
                 currentOrder={index}
                 totalCards={cards.length}
+                englishEnabled={englishEnabled}
               />
             ))}
           </div>
