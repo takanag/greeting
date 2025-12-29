@@ -92,7 +92,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
                   <h2 className="text-xl font-bold text-gray-900">{card.title}</h2>
                   <div className="flex items-center gap-2 text-sm text-gray-800">
                     <span className="font-semibold">{card.month}</span>
-                    {card.by_text && <span>By {card.by_text}</span>}
+                    {card.by_text && <span>by {card.by_text}</span>}
                   </div>
                 </div>
 
@@ -132,49 +132,66 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
         {/* フッター */}
         {year.footer_visible && (
           <div className="mt-8 pt-4 border-t border-gray-300">
-            {/* 連絡先情報（3列レイアウト） */}
-            {year.contact_info && (
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                {/* 自宅 */}
-                <div className="text-center">
-                  <h3 className="text-xs font-bold mb-1 text-gray-800">自宅</h3>
-                  <ul className="space-y-1 text-xs text-gray-800">
-                    {year.contact_info.home?.address && (
-                      <li className="whitespace-pre-line">{year.contact_info.home.address}</li>
-                    )}
-                    {year.contact_info.home?.phone && (
-                      <li>電話: {year.contact_info.home.phone}</li>
-                    )}
-                  </ul>
-                </div>
+            {/* 連絡先情報（動的レイアウト） */}
+            {year.contact_info && (() => {
+              // 連絡先データを取得（後方互換性のため）
+              let contacts: Array<{ name?: string; email: string; phone: string }> = [];
+              if (year.contact_info.contacts && Array.isArray(year.contact_info.contacts)) {
+                const count = year.contact_info.contact_count || year.contact_info.contacts.length;
+                contacts = year.contact_info.contacts.slice(0, count);
+              } else {
+                if (year.contact_info.takahiko && (year.contact_info.takahiko.email || year.contact_info.takahiko.phone)) {
+                  contacts.push(year.contact_info.takahiko);
+                }
+                if (year.contact_info.itsuki && (year.contact_info.itsuki.email || year.contact_info.itsuki.phone)) {
+                  contacts.push(year.contact_info.itsuki);
+                }
+              }
+              
+              const totalCols = contacts.length + (year.contact_info.home?.address || year.contact_info.home?.phone ? 1 : 0);
+              const gridColsClass = 
+                totalCols === 1 ? 'grid-cols-1' :
+                totalCols === 2 ? 'grid-cols-2' :
+                totalCols === 3 ? 'grid-cols-3' :
+                totalCols === 4 ? 'grid-cols-4' :
+                'grid-cols-5';
+              
+              return (
+                <div className={`grid ${gridColsClass} gap-2 mb-4`}>
+                  {/* 自宅 */}
+                  {(year.contact_info.home?.address || year.contact_info.home?.phone) && (
+                    <div className="text-center">
+                      <h3 className="text-xs font-bold mb-1 text-gray-800">自宅</h3>
+                      <ul className="space-y-1 text-xs text-gray-800">
+                        {year.contact_info.home?.address && (
+                          <li className="whitespace-pre-line">{year.contact_info.home.address}</li>
+                        )}
+                        {year.contact_info.home?.phone && (
+                          <li>電話: {year.contact_info.home.phone}</li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
-                {/* 恭彦連絡先 */}
-                <div className="text-center">
-                  <h3 className="text-xs font-bold mb-1 text-gray-800">恭彦連絡先</h3>
-                  <ul className="space-y-1 text-xs text-gray-800">
-                    {year.contact_info.takahiko.email && (
-                      <li>Eメール: {year.contact_info.takahiko.email}</li>
-                    )}
-                    {year.contact_info.takahiko.phone && (
-                      <li>携帯: {year.contact_info.takahiko.phone}</li>
-                    )}
-                  </ul>
+                  {/* 連絡先（動的） */}
+                  {contacts.map((contact, index) => (
+                    <div key={index} className="text-center">
+                      <h3 className="text-xs font-bold mb-1 text-gray-800">
+                        {contact.name || '連絡先'}
+                      </h3>
+                      <ul className="space-y-1 text-xs text-gray-800">
+                        {contact.email && (
+                          <li>Eメール: {contact.email}</li>
+                        )}
+                        {contact.phone && (
+                          <li>携帯: {contact.phone}</li>
+                        )}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-
-                {/* 樹連絡先 */}
-                <div className="text-center">
-                  <h3 className="text-xs font-bold mb-1 text-gray-800">樹連絡先</h3>
-                  <ul className="space-y-1 text-xs text-gray-800">
-                    {year.contact_info.itsuki.email && (
-                      <li>Eメール: {year.contact_info.itsuki.email}</li>
-                    )}
-                    {year.contact_info.itsuki.phone && (
-                      <li>携帯: {year.contact_info.itsuki.phone}</li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* 従来の footer_text */}
             {year.footer_text && (

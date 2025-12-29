@@ -3,14 +3,25 @@ export type ContactInfo = {
     address?: string;
     phone?: string;
   };
-  takahiko: {
+  // 後方互換性のため、既存のtakahikoとitsukiも保持
+  takahiko?: {
+    name?: string;
     email: string;
     phone: string;
   };
-  itsuki: {
+  itsuki?: {
+    name?: string;
     email: string;
     phone: string;
   };
+  // 新しい構造: 連絡先の配列
+  contacts?: Array<{
+    name?: string;
+    email: string;
+    phone: string;
+  }>;
+  // 表示する連絡先の数（デフォルト: 2）
+  contact_count?: number;
 };
 
 export type Year = {

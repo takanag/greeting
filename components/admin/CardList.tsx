@@ -115,7 +115,7 @@ function SortableCardItem({
               <span className="text-sm text-gray-800">({card.month})</span>
             </div>
             {card.by_text && (
-              <p className="text-sm text-gray-800 mb-2">By {card.by_text}</p>
+              <p className="text-sm text-gray-800 mb-2">by {card.by_text}</p>
             )}
             {card.description && (
               <p className="text-sm text-gray-700 line-clamp-2">{card.description}</p>
