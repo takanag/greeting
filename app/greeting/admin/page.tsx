@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import YearEditor from '@/components/admin/YearEditor';
@@ -18,23 +18,7 @@ export default function AdminPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  useEffect(() => {
-    loadCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    if (currentUser) {
-      loadYears();
-    }
-  }, [currentUser, isAdmin]);
-
-  useEffect(() => {
-    if (selectedYearId) {
-      loadYearData(selectedYearId);
-    }
-  }, [selectedYearId]);
-
-  const loadCurrentUser = async () => {
+  const loadCurrentUser = useCallback(async () => {
     try {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error) throw error;
@@ -50,7 +34,23 @@ export default function AdminPage() {
     } catch (err) {
       console.error('Error loading current user:', err);
     }
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    loadCurrentUser();
+  }, [loadCurrentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      loadYears();
+    }
+  }, [currentUser, isAdmin]);
+
+  useEffect(() => {
+    if (selectedYearId) {
+      loadYearData(selectedYearId);
+    }
+  }, [selectedYearId]);
 
   const loadYears = async () => {
     try {
