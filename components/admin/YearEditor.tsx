@@ -70,7 +70,7 @@ export default function YearEditor({
             type="text"
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
             required
           />
         </div>
@@ -126,7 +126,7 @@ export default function YearEditor({
                       })
                     }
                     rows={3}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md resize-y"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md resize-y text-gray-900"
                     placeholder="住所を入力（Enterキーで改行できます）"
                   />
                 </div>
@@ -141,7 +141,7 @@ export default function YearEditor({
                         home: { ...contactInfo.home, phone: e.target.value },
                       })
                     }
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                     placeholder="電話番号を入力"
                   />
                 </div>
@@ -163,7 +163,7 @@ export default function YearEditor({
                         takahiko: { ...contactInfo.takahiko, email: e.target.value },
                       })
                     }
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                     placeholder="takanag@gmail.com"
                   />
                 </div>
@@ -178,7 +178,7 @@ export default function YearEditor({
                         takahiko: { ...contactInfo.takahiko, phone: e.target.value },
                       })
                     }
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                     placeholder="090-3319-3166"
                   />
                 </div>
@@ -200,7 +200,7 @@ export default function YearEditor({
                         itsuki: { ...contactInfo.itsuki, email: e.target.value },
                       })
                     }
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                     placeholder="itsukinag@gmail.com"
                   />
                 </div>
@@ -215,7 +215,7 @@ export default function YearEditor({
                         itsuki: { ...contactInfo.itsuki, phone: e.target.value },
                       })
                     }
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md text-gray-900"
                     placeholder="080-1564-2938"
                   />
                 </div>

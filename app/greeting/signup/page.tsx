@@ -154,7 +154,7 @@ export default function SignupPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="your-email@gmail.com"
             />
             <p className="text-xs text-gray-700 mt-1">
@@ -174,7 +174,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               required
               minLength={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="6文字以上"
             />
             <p className="text-xs text-gray-700 mt-1">パスワードは6文字以上で入力してください</p>
@@ -192,7 +192,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               required
               minLength={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="パスワードを再入力"
             />
           </div>

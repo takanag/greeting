@@ -104,7 +104,7 @@ export default function CardEditor({
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900"
           required
         />
       </div>
@@ -117,7 +117,7 @@ export default function CardEditor({
           type="text"
           value={byText}
           onChange={(e) => setByText(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900"
         />
       </div>
 
@@ -128,7 +128,7 @@ export default function CardEditor({
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value as typeof MONTHS[number])}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900"
         >
           {MONTHS.map((m) => (
             <option key={m} value={m}>
@@ -146,7 +146,7 @@ export default function CardEditor({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={6}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md resize-y"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md resize-y text-gray-900"
           placeholder="説明文を入力してください（Enterキーで改行できます）"
         />
       </div>
