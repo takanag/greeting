@@ -59,7 +59,7 @@ export default function YearEditor({
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">年度情報の編集</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-900">年度情報の編集</h2>
       
       <div className="space-y-4">
         <div>
@@ -116,7 +116,7 @@ export default function YearEditor({
               <h4 className="font-semibold text-sm mb-2">自宅</h4>
               <div className="space-y-2">
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">住所（改行可能）</label>
+                  <label className="block text-xs text-gray-800 mb-1">住所（改行可能）</label>
                   <textarea
                     value={contactInfo.home?.address || ''}
                     onChange={(e) =>
@@ -131,7 +131,7 @@ export default function YearEditor({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">電話</label>
+                  <label className="block text-xs text-gray-800 mb-1">電話</label>
                   <input
                     type="tel"
                     value={contactInfo.home?.phone || ''}
@@ -153,7 +153,7 @@ export default function YearEditor({
               <h4 className="font-semibold text-sm mb-2">恭彦連絡先</h4>
               <div className="space-y-2">
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">Eメール</label>
+                  <label className="block text-xs text-gray-800 mb-1">Eメール</label>
                   <input
                     type="email"
                     value={contactInfo.takahiko.email}
@@ -168,7 +168,7 @@ export default function YearEditor({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">携帯</label>
+                  <label className="block text-xs text-gray-800 mb-1">携帯</label>
                   <input
                     type="tel"
                     value={contactInfo.takahiko.phone}
@@ -190,7 +190,7 @@ export default function YearEditor({
               <h4 className="font-semibold text-sm mb-2">樹連絡先</h4>
               <div className="space-y-2">
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">Eメール</label>
+                  <label className="block text-xs text-gray-800 mb-1">Eメール</label>
                   <input
                     type="email"
                     value={contactInfo.itsuki.email}
@@ -205,7 +205,7 @@ export default function YearEditor({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1">携帯</label>
+                  <label className="block text-xs text-gray-800 mb-1">携帯</label>
                   <input
                     type="tel"
                     value={contactInfo.itsuki.phone}

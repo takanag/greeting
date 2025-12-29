@@ -115,14 +115,14 @@ export default function SignupPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">登録完了</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-800 mb-4">
               アカウントの登録が完了しました。
               <br />
               確認メールが送信されましたので、メールボックスをご確認ください。
               <br />
               （メール確認が不要な設定の場合は、すぐにログインできます）
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-700">
               3秒後にログインページにリダイレクトします...
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function SignupPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="your-email@gmail.com"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-700 mt-1">
               実際に使用できるメールアドレス（Gmail、Yahoo、Outlookなど）をご入力ください
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function SignupPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="6文字以上"
             />
-            <p className="text-xs text-gray-500 mt-1">パスワードは6文字以上で入力してください</p>
+            <p className="text-xs text-gray-700 mt-1">パスワードは6文字以上で入力してください</p>
           </div>
           
           <div>
@@ -224,7 +224,7 @@ export default function SignupPage() {
         <div className="mt-4 text-center">
           <Link
             href="/greeting"
-            className="text-sm text-gray-600 hover:text-gray-800"
+            className="text-sm text-gray-800 hover:text-gray-900"
           >
             ← トップページに戻る
           </Link>

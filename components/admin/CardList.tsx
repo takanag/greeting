@@ -103,19 +103,19 @@ function SortableCardItem({
               <div
                 {...attributes}
                 {...listeners}
-                className="cursor-move text-gray-400 hover:text-gray-600"
+                className="cursor-move text-gray-600 hover:text-gray-800"
                 title="ドラッグして並び替え"
               >
                 ☰
               </div>
-              <span className="text-xs text-gray-500 font-mono bg-gray-200 px-2 py-1 rounded">
+              <span className="text-xs text-gray-800 font-mono bg-gray-200 px-2 py-1 rounded">
                 {safeCurrentOrder + 1}
               </span>
-              <h3 className="font-bold text-lg">{card.title}</h3>
-              <span className="text-sm text-gray-600">({card.month})</span>
+              <h3 className="font-bold text-lg text-gray-900">{card.title}</h3>
+              <span className="text-sm text-gray-800">({card.month})</span>
             </div>
             {card.by_text && (
-              <p className="text-sm text-gray-600 mb-2">By {card.by_text}</p>
+              <p className="text-sm text-gray-800 mb-2">By {card.by_text}</p>
             )}
             {card.description && (
               <p className="text-sm text-gray-700 line-clamp-2">{card.description}</p>
@@ -277,7 +277,7 @@ export default function CardList({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">カード一覧</h2>
+        <h2 className="text-xl font-bold text-gray-900">カード一覧</h2>
         <button
           onClick={() => setShowNewCard(true)}
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"

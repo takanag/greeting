@@ -153,7 +153,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div>読み込み中...</div>
+        <div className="text-gray-900">読み込み中...</div>
       </div>
     );
   }
@@ -162,7 +162,7 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-200 px-4 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">管理画面</h1>
+          <h1 className="text-2xl font-bold text-gray-900">管理画面</h1>
           <button
             onClick={handleLogout}
             className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
@@ -189,7 +189,7 @@ export default function AdminPage() {
             年度を選択
           </label>
           {years.length === 0 ? (
-            <p className="text-sm text-gray-500 mb-2">管理できる年度がありません。</p>
+            <p className="text-sm text-gray-800 mb-2">管理できる年度がありません。</p>
           ) : (
             <select
               value={selectedYearId || ''}

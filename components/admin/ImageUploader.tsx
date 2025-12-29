@@ -76,12 +76,12 @@ export default function ImageUploader({
           <div>アップロード中...</div>
         ) : (
           <div>
-            <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-800">
               {isDragActive
                 ? 'ここに画像をドロップ'
                 : '画像をドラッグ&ドロップ、またはクリックして選択'}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-700 mt-1">
               JPEG, PNG, GIF, WebP 対応
             </p>
           </div>

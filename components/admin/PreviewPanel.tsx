@@ -27,7 +27,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">プレビュー</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-900">プレビュー</h2>
       <div className="border border-gray-300 rounded-lg bg-white max-h-[80vh] overflow-y-auto">
         {/* ヘッダー背景画像 */}
         {year.header_background_url && (
@@ -76,7 +76,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
               <div className="p-4">
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-gray-900">{card.title}</h2>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-gray-800">
                     <span className="font-semibold">{card.month}</span>
                     {card.by_text && <span>By {card.by_text}</span>}
                   </div>
@@ -124,7 +124,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
                 {/* 自宅 */}
                 <div className="text-center">
                   <h3 className="text-xs font-bold mb-1 text-gray-800">自宅</h3>
-                  <ul className="space-y-1 text-xs text-gray-600">
+                  <ul className="space-y-1 text-xs text-gray-800">
                     {year.contact_info.home?.address && (
                       <li className="whitespace-pre-line">{year.contact_info.home.address}</li>
                     )}
@@ -137,7 +137,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
                 {/* 恭彦連絡先 */}
                 <div className="text-center">
                   <h3 className="text-xs font-bold mb-1 text-gray-800">恭彦連絡先</h3>
-                  <ul className="space-y-1 text-xs text-gray-600">
+                  <ul className="space-y-1 text-xs text-gray-800">
                     {year.contact_info.takahiko.email && (
                       <li>Eメール: {year.contact_info.takahiko.email}</li>
                     )}
@@ -150,7 +150,7 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
                 {/* 樹連絡先 */}
                 <div className="text-center">
                   <h3 className="text-xs font-bold mb-1 text-gray-800">樹連絡先</h3>
-                  <ul className="space-y-1 text-xs text-gray-600">
+                  <ul className="space-y-1 text-xs text-gray-800">
                     {year.contact_info.itsuki.email && (
                       <li>Eメール: {year.contact_info.itsuki.email}</li>
                     )}
