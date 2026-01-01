@@ -5,6 +5,7 @@ import { YearWithCards } from '@/types/database';
 import CardModal from '@/components/CardModal';
 import ContactInfo from '@/components/ContactInfo';
 import FooterText from '@/components/FooterText';
+import LinkifyText from '@/components/LinkifyText';
 
 async function getYearData(username: string, year: number): Promise<YearWithCards | null> {
   try {
@@ -178,8 +179,8 @@ function CardItem({ card, priority = false }: { card: YearWithCards['cards'][0];
 
         {/* 説明文 */}
         {description && (
-          <div className="text-sm md:text-base text-gray-700 whitespace-pre-line flex-1">
-            {description}
+          <div className="text-sm md:text-base text-gray-700 flex-1">
+            <LinkifyText text={description} />
           </div>
         )}
       </div>

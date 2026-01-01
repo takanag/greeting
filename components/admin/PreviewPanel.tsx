@@ -4,6 +4,7 @@ import { YearWithCards } from '@/types/database';
 import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
+import LinkifyText from '@/components/LinkifyText';
 
 export default function PreviewPanel({ year }: { year: YearWithCards }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -120,8 +121,8 @@ export default function PreviewPanel({ year }: { year: YearWithCards }) {
                 )}
 
                 {card.description && (
-                  <div className="text-sm text-gray-700 whitespace-pre-line">
-                    {card.description}
+                  <div className="text-sm text-gray-700">
+                    <LinkifyText text={card.description} />
                   </div>
                 )}
               </div>
