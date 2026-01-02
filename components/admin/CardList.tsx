@@ -282,12 +282,12 @@ export default function CardList({
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-900">カード一覧</h2>
+        <h2 className="text-xl font-bold text-gray-900">写真一覧</h2>
         <button
           onClick={() => setShowNewCard(true)}
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          新規カードを追加
+          新規写真を追加
         </button>
       </div>
 

@@ -67,7 +67,9 @@ export default function AdminPage() {
       if (data && data.length > 0) {
         setYears(data as any);
         if (!selectedYearId) {
-          setSelectedYearId(data[0].id);
+          // 自分のページを優先的に選択（管理者の場合は最初のページ）
+          const myYear = data.find((y: any) => y.user_id === currentUser?.id);
+          setSelectedYearId(myYear ? myYear.id : data[0].id);
         }
       } else {
         setYears([]);
@@ -202,7 +204,7 @@ export default function AdminPage() {
             >
               {years.map((year) => (
                 <option key={year.id} value={year.id}>
-                  {year.year}年 {year.user_id === currentUser?.id ? '(自分のページ)' : isAdmin ? '(他ユーザーのページ)' : ''}
+                  {year.year}年 {year.user_id === currentUser?.id ? '(自分のページ)' : isAdmin && year.username ? `(${year.username}のページ)` : ''}
                 </option>
               ))}
             </select>
