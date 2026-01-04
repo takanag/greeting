@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "New Year Greeting",
+  title: "オンライン年賀状作成ページ",
   description: "年賀状の代替Webページ",
 };
 

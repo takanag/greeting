@@ -147,3 +147,4 @@ ORDER BY c.display_order;
 
 - Vercel Dashboard で環境変数を確認
 - 本番環境の Supabase データベースにデータが存在するか確認
+

@@ -7,3 +7,4 @@ UPDATE years
 SET title_text = '明けましておめでとうございます' 
 WHERE title_text IS NULL OR title_text = '';
 
+

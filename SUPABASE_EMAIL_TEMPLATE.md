@@ -172,3 +172,4 @@ HTMLメールを使用する場合は、**Use HTML** オプションを有効に
 - [Supabase Email Templates Documentation](https://supabase.com/docs/guides/auth/auth-email-templates)
 - [Supabase SMTP Settings](https://supabase.com/docs/guides/auth/auth-smtp)
 
+

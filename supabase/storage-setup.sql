@@ -27,3 +27,4 @@ USING (
   AND auth.role() = 'authenticated'
 );
 
+

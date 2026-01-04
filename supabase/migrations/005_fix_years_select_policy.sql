@@ -14,3 +14,4 @@ CREATE POLICY "Years are viewable by everyone"
 -- 注意: 管理画面でのフィルタリングは、クライアント側（app/greeting/admin/page.tsx）で実装
 -- 管理者はすべてのページを、一般ユーザーは自分のページのみを表示
 
+

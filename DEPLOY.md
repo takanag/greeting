@@ -73,3 +73,4 @@ Vercel Dashboardで以下の環境変数を設定してください：
 - 環境変数はVercel Dashboardで設定してください
 - Supabaseのマイグレーションは手動で実行する必要があります
 
+

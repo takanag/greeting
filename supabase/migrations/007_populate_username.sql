@@ -14,3 +14,4 @@ WHERE username IS NULL AND user_id IS NOT NULL;
 -- 確認: usernameが設定されていないレコードがないか確認
 -- SELECT id, year, user_id, username FROM years WHERE username IS NULL;
 
+
